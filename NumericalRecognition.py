@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.special
 
-#神经网络初始化
+#神经网络
 class neuralNetwork:
 
     #初始化
@@ -17,15 +17,39 @@ class neuralNetwork:
         self.wih = np.random.normal(0.0, pow(self.hnodes, -0.5), (self.hnodes, self.inodes))
         self.who = np.random.normal(0.0, pow(self.onodes, -0.5), (self.onodes, self.hnodes))
 
+        # 激活函数
         self.activation_function = lambda x: scipy.special.expit(x)
+
         pass
 
-    def train(self):
+    # 训练
+    def train(self, inputs_list, targets_list):
+
+        #针对样本计算输出
+        inputs = np.array(inputs_list, ndmin=2).T
+        targets = np.array(targets_list, ndmin=2).T
+
+        hidden_inputs = np.dot(self.wih, inputs)
+
+        hidden_outputs = self.activation_function(hidden_inputs)
+
+        final_inputs = np.dot(self.who, hidden_outputs)
+
+        final_outputs = self.activation_function(final_inputs)
+
+        #误差反向传播，更新权重
+        output_errors = targets - final_outputs
+
+        hidden_errors = np.dot(self.who.T, output_errors)
+
+        self.who += self.lr * np.dot((output_errors * final_outputs * (1.0 - final_outputs)), np.transpose(hidden_outputs))
+        self.wih += self.lr * np.dot((hidden_errors * hidden_outputs * (1.0 - hidden_outputs)), np.transpose(inputs))
         pass
-    #训练
+
 
     #查询
     def query(self, inputs_list):
+
         inputs = np.array(inputs_list, ndmin=2).T
 
         hidden_inputs = np.dot(self.wih, inputs)
@@ -38,13 +62,14 @@ class neuralNetwork:
 
         return final_outputs
 
-input_nodes = 3
-hidden_nodes = 3
-output_nodes = 3
-
-learning_rate = 0.3
-
-n = neuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
-
-n.query([1.0, 0.5, -1.5])
-
+# input_nodes = 3
+# hidden_nodes = 3
+# output_nodes = 3
+#
+# learning_rate = 0.3
+#
+# n = neuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
+#
+# n.query([1.0, 0.5, -1.5])
+#
+# print(n)
