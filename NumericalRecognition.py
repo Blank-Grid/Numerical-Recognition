@@ -63,13 +63,38 @@ class neuralNetwork:
 
         return final_outputs
 
-data_file = open("mnist_dataset/mnist_train_100.csv", 'r')
-data_list = data_file.readlines()
-data_file.close()
 
-all_values = data_list [0].split(',')
-image_array = np.asfarray(all_values[1:]).reshape((28,28))
+input_nodes = 784
+output_nodes = 10
+hidden_nodes = 100
+
+learning_rate = 0.3
+
+n = neuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
+
+training_data_file = open("mnist_dataset/mnist_train_100.csv", 'r')
+training_data_list = training_data_file.readlines()
+training_data_file.close()
+
+#训练数据
+for record in training_data_list:
+    all_values = record.split(',')
+    inputs = (np.asfarray(all_values[1:])) / 255.0 * 0.99 + 0.01
+    targets = np.zeros(output_nodes) + 0.01
+    targets[int(all_values[0])] = 0.99
+    n.train(inputs, targets)
+
+
+
+#测试网络
+test_data_file = open("mnist_dataset/mnist_test_10.csv", 'r')
+test_data_list = test_data_file.readlines()
+test_data_file.close()
+
+all_values = test_data_list[0].split(',')
+print(all_values[0])
+
+image_array = np.asfarray(all_values[1:]).reshape((28, 28))
 matplotlib.pyplot.imshow(image_array, cmap='Greys', interpolation='None')
-
 
 matplotlib.pyplot.show()
