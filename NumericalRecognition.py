@@ -66,9 +66,9 @@ class neuralNetwork:
 
 input_nodes = 784
 output_nodes = 10
-hidden_nodes = 100
+hidden_nodes = 200
 
-learning_rate = 0.3
+learning_rate = 0.1
 
 n = neuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
 
@@ -79,7 +79,7 @@ training_data_file.close()
 #训练数据
 for record in training_data_list:
     all_values = record.split(',')
-    inputs = (np.asfarray(all_values[1:])) / 255.0 * 0.99 + 0.01
+    inputs = (np.asfarray(all_values[1:])) / 255.0 * 0.99 + 0.01  #缩放和移位MNIST数据,范围为0.01-1.00
     targets = np.zeros(output_nodes) + 0.01
     targets[int(all_values[0])] = 0.99
     n.train(inputs, targets)
@@ -98,26 +98,33 @@ test_data_file.close()
 #
 # matplotlib.pyplot.show()
 
-# n.query((np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01)
 
 scorecard = []
-for record in test_data_list:
-    #分离文本
-    all_values = record.split(',')
-    #记录第一个数字，即正确答案
-    correct_label = int(all_values[0])
 
-    inputs = (np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
-    outputs = n.query(inputs)
-    #最大值的索引
-    label = np.argmax(outputs)
+epochs = 4  #4个世代的训练
 
-    if(label == correct_label):
-        scorecard.append(1)
-    else:
-        scorecard.append(0)
+for e in range(epochs):
+
+    for record in test_data_list:
+
+        #分离文本
+        all_values = record.split(',')
+        #记录第一个数字，即正确答案
+        correct_label = int(all_values[0])
+
+        inputs = (np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
+        outputs = n.query(inputs)
+
+        #最大值的索引
+        label = np.argmax(outputs)
+
+        if(label == correct_label):
+            scorecard.append(1)
+        else:
+            scorecard.append(0)
+            pass
+
         pass
-    pass
 
 
 #准确率(性能)
