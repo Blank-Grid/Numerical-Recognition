@@ -66,9 +66,9 @@ class neuralNetwork:
 
 input_nodes = 784
 output_nodes = 10
-hidden_nodes = 200
+hidden_nodes = 200  #至少大于100
 
-learning_rate = 0.1
+learning_rate = 0.1  #没有进行科学的评估，仅手动试了几个数值，发现0.1性能较好
 
 n = neuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
 
@@ -130,3 +130,5 @@ for e in range(epochs):
 #准确率(性能)
 scorecard_array = np.asarray(scorecard)
 print("performance = ", scorecard_array.sum() / scorecard_array.size)
+
+
